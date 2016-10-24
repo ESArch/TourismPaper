@@ -78,12 +78,38 @@ class Queries:
         self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
         return self.execute_query()
 
+    def time_distribution_weekend_filtrado(self):
+        self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
+        self.query += "FROM tweet, usuario\n"
+        self.query += "WHERE twe_usuario = usu_id\n"
+        self.query += "AND NOT usu_filtrado\n"
+        self.query += "AND (date_part('dow', DATE(twe_fecha_creacion)) < 1\n"
+        self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) > 4)\n"
+        self.query += "GROUP BY EXTRACT (HOUR FROM twe_hora_creacion)\n"
+        self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
+        return self.execute_query()
+
     def time_distribution_weekend_near_POI(self):
         self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
         self.query += "FROM\n"
         self.query += "(SELECT twe_id, twe_hora_creacion, twe_fecha_creacion, MIN(ST_DISTANCE(twe_geografia, poi_geografia))\n"
         self.query += "FROM tweet, punto_interes\n"
         self.query += "WHERE (date_part('dow', DATE(twe_fecha_creacion)) < 1\n"
+        self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) > 4)\n"
+        self.query += "GROUP BY twe_id\n"
+        self.query += "HAVING MIN(ST_DISTANCE(twe_geografia, poi_geografia)) <= 50) as foo\n"
+        self.query += "GROUP BY EXTRACT (HOUR FROM twe_hora_creacion)\n"
+        self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
+        return self.execute_query()
+
+    def time_distribution_weekend_near_POI_filtrado(self):
+        self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
+        self.query += "FROM\n"
+        self.query += "(SELECT twe_id, twe_hora_creacion, twe_fecha_creacion, MIN(ST_DISTANCE(twe_geografia, poi_geografia))\n"
+        self.query += "FROM tweet, punto_interes, usuario\n"
+        self.query += "WHERE twe_usuario = usu_id\n"
+        self.query += "AND NOT usu_filtrado\n"
+        self.query += "AND (date_part('dow', DATE(twe_fecha_creacion)) < 1\n"
         self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) > 4)\n"
         self.query += "GROUP BY twe_id\n"
         self.query += "HAVING MIN(ST_DISTANCE(twe_geografia, poi_geografia)) <= 50) as foo\n"
@@ -100,12 +126,38 @@ class Queries:
         self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
         return self.execute_query()
 
+    def time_distribution_weekdays_filtrado(self):
+        self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
+        self.query += "FROM tweet, usuario\n"
+        self.query += "WHERE twe_usuario = usu_id\n"
+        self.query += "AND NOT usu_filtrado\n"
+        self.query += "AND (date_part('dow', DATE(twe_fecha_creacion)) >= 1\n"
+        self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) <= 4)\n"
+        self.query += "GROUP BY EXTRACT (HOUR FROM twe_hora_creacion)\n"
+        self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
+        return self.execute_query()
+
     def time_distribution_weekdays_near_POI(self):
         self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
         self.query += "FROM\n"
         self.query += "(SELECT twe_id, twe_hora_creacion, twe_fecha_creacion, MIN(ST_DISTANCE(twe_geografia, poi_geografia))\n"
         self.query += "FROM tweet, punto_interes\n"
         self.query += "WHERE (date_part('dow', DATE(twe_fecha_creacion)) >= 1\n"
+        self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) <= 4)\n"
+        self.query += "GROUP BY twe_id\n"
+        self.query += "HAVING MIN(ST_DISTANCE(twe_geografia, poi_geografia)) <= 50) as foo\n"
+        self.query += "GROUP BY EXTRACT (HOUR FROM twe_hora_creacion)\n"
+        self.query += "ORDER BY EXTRACT (HOUR FROM twe_hora_creacion) ASC\n"
+        return self.execute_query()
+
+    def time_distribution_weekdays_near_POI_filtrado(self):
+        self.query = "SELECT EXTRACT (HOUR FROM twe_hora_creacion), COUNT(*)\n"
+        self.query += "FROM\n"
+        self.query += "(SELECT twe_id, twe_hora_creacion, twe_fecha_creacion, MIN(ST_DISTANCE(twe_geografia, poi_geografia))\n"
+        self.query += "FROM tweet, punto_interes, usuario\n"
+        self.query += "WHERE twe_usuario = usu_id\n"
+        self.query += "AND NOT usu_filtrado\n"
+        self.query += "AND (date_part('dow', DATE(twe_fecha_creacion)) >= 1\n"
         self.query += "OR date_part('dow', DATE(twe_fecha_creacion)) <= 4)\n"
         self.query += "GROUP BY twe_id\n"
         self.query += "HAVING MIN(ST_DISTANCE(twe_geografia, poi_geografia)) <= 50) as foo\n"
