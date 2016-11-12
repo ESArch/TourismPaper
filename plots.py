@@ -127,7 +127,7 @@ class Plots():
         plt.style.use('custom538')
 
         fig, ax = plt.subplots()
-        #fig.set_size_inches(12, 9)
+        fig.set_size_inches(8, 6)
         ax.plot(x, y)
 
         ax.set_xlabel("Days")
@@ -138,6 +138,24 @@ class Plots():
 
         plt.tight_layout()
         plt.savefig('figure5.png')
+        plt.show()
+
+    def time_intervals_detail(self):
+        data = self.queries.time_intervals_detail()
+
+        x = [int(i[0]) for i in data]
+        y = [int(i[1]) for i in data]
+
+        plt.style.use('custom538')
+
+        fig, ax = plt.subplots()
+        fig.set_size_inches(4, 3)
+        ax.plot(x, y)
+
+        ax.set_xlim(5, 55)
+
+        plt.tight_layout()
+        plt.savefig('figure5detail.png')
         plt.show()
 
     def distance_between_tweets_and_pois(self):
@@ -211,17 +229,18 @@ class Plots():
     def avg_stddev_distance_to_POI(self):
         data = self.queries.avg_stddev_distance_to_POI()
 
-        x = [int(i[0]) for i in data]
         avg = [int(i[1]) for i in data]
         stddev = [int(i[2]) for i in data]
+        x = [i for i in range(len(avg))]
 
         plt.style.use('custom538')
 
         fig, ax = plt.subplots()
         fig.set_size_inches(12,6)
 
-        ax.plot(avg, label="Average")
-        ax.plot(stddev, label="Standard deviation")
+
+        ax.plot(x, stddev, label="Standard deviation", ls='', marker='o', markersize=2, markeredgecolor='none')
+        ax.plot(x, avg, label="Average")
         ax.set_title("Distance to closest POI")
         ax.legend()
 
@@ -233,6 +252,29 @@ class Plots():
 
     def avg_distance_and_interval(self):
         data = self.queries.avg_distance_and_interval()
+
+        x = [int(i[0]) for i in data]
+        y = [int(i[1]) for i in data]
+
+        plt.style.use('custom538')
+
+        fig, ax = plt.subplots()
+        fig.set_size_inches(16,16)
+
+        ax.scatter(y, x)
+        #ax.set_title("Intensity of tweets")
+        ax.set_ylabel("Average distance to closest POI")
+        #ax.set_yscale('log')
+        ax.set_xlabel("Time interval in days")
+
+
+        plt.tight_layout()
+        plt.savefig("scatter.png")
+        plt.show()
+
+
+    def avg_distance_and_interval_detail(self):
+        data = self.queries.avg_distance_and_interval_detail()
 
         x = [int(i[0]) for i in data]
         y = [int(i[1]) for i in data]

@@ -62,6 +62,18 @@ class Queries:
         self.query += "ORDER BY dif\n"
         return self.execute_query()
 
+    def time_intervals_detail(self):
+        self.query = "SELECT dif, COUNT(*)\n"
+        self.query += "FROM (SELECT twe_usuario, COUNT(*),MAX(twe_fecha_creacion)-MIN(twe_fecha_creacion) AS dif\n"
+        self.query += "FROM tweet\n"
+        self.query += "GROUP BY twe_usuario\n"
+        self.query += "HAVING COUNT(*) >=3 \n"
+        self.query += "AND ( MAX(twe_fecha_creacion)-MIN(twe_fecha_creacion) >= 5 AND MAX(twe_fecha_creacion)-MIN(twe_fecha_creacion) <= 60 )) AS foo\n"
+        self.query += "GROUP BY dif\n"
+        self.query += "ORDER BY dif\n"
+        return self.execute_query()
+
+
     def distance_between_tweets_and_pois(self):
         self.query = "SELECT twe_id, MIN(ST_DISTANCE(twe_geografia, poi_geografia))\n"
         self.query += "FROM tweet, punto_interes\n"
@@ -112,7 +124,7 @@ class Queries:
         self.query += "FROM tweet\n"
         self.query += "GROUP BY twe_usuario\n"
         self.query += "HAVING COUNT(*) >= 5\n"
-        self.query += "ORDER BY STDDEV(twe_min_distancia) ASC\n"
+        self.query += "ORDER BY AVG(twe_min_distancia) ASC\n"
         return self.execute_query()
 
     """
@@ -122,6 +134,12 @@ class Queries:
         self.query += "WHERE usu_id IN (SELECT twe_usuario FROM tweet GROUP BY twe_usuario HAVING COUNT(*) >= 5)\n"
         return self.execute_query()
     """
+
+    def avg_distance_and_interval_detail(self):
+        self.query = "SELECT AVG(twe_min_distancia), MAX(twe_fecha_creacion)-MIN(twe_fecha_creacion)\n"
+        self.query += "FROM tweet\n"
+        self.query += "GROUP BY twe_usuario HAVING COUNT(*) >= 5 AND AVG(twe_min_distancia) <= 200\n"
+        return self.execute_query()
 
     def avg_distance_and_interval(self):
         self.query = "SELECT AVG(twe_min_distancia), MAX(twe_fecha_creacion)-MIN(twe_fecha_creacion)\n"
